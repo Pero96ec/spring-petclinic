@@ -3,6 +3,12 @@ pipeline {
     agent none
 
     stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/Pero96ec/spring-petclinic.git'
+            }
+        }
+        
         stage('Maven Install') {
             agent {
                 docker {
@@ -11,6 +17,16 @@ pipeline {
             }
             steps {
                 sh 'mvn clean install'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarQube Scanner'
+                    withSonarQubeEnv('SonarQube') {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
             }
         }
 
