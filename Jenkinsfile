@@ -16,7 +16,9 @@ pipeline {
 
         stage('Sonar') {
             steps {
-                sh "mvn sonar:sonar -Pcoverage -Dsonar.host.url=${SONAR_URL_DEV} -Dsonar.login=${SonarToken}"
+                withSonarQubeEnv('sonarqube'){
+                    sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Pcoverage"
+                }
             }
         }
 
