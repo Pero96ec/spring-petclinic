@@ -1,6 +1,15 @@
 #!groovy
 pipeline {
-    agent none
+    agent any
+
+    tools {
+        maven "MAVEN_HOME"
+    }
+    stage('Test') {
+        steps {
+                sh "mvn clean test"
+        }
+    }
 
     stages {
         stage('Maven Install') {
