@@ -5,13 +5,14 @@ pipeline {
     tools {
         maven "MAVEN_HOME"
     }
-    stage('Test') {
-        steps {
-                sh "mvn clean test"
-        }
-    }
 
     stages {
+        stage('Test') {
+            steps {
+                    sh "mvn clean test"
+            }
+        }
+
         stage('Maven Install') {
             agent {
                 docker {
