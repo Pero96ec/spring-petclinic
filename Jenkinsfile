@@ -35,9 +35,9 @@ pipeline {
         }
 
         stage('Docker Build') {
-            agent any
             steps {
-                sh 'docker build -t grupo05/spring-petclinic:latest .'
+               // sh 'docker build -t grupo05/spring-petclinic:latest .'
+                sh 'mvn spring-boot:run -f'
             }
         }
 
