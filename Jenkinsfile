@@ -1,32 +1,36 @@
 #!groovy
 pipeline {
-    agent none
+    agent any
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "MAVEN_HOME"
+    }
 
     stages {
-        stage('Checkout') {
+
+        stage('Clone') {
             steps {
                 git 'https://github.com/Pero96ec/spring-petclinic.git'
             }
         }
-        
-        stage('Maven Install') {
-            agent {
-                docker {
-                    image 'maven:3.5.0'
-                }
+
+        stage('Build') {
+            steps {
+                sh "mvn -DskipTests clean package"
             }
+        }
+        
+        stage('Test') {
             steps {
                 sh 'mvn clean install'
             }
         }
-        stage('SonarQube Analysis') {
+
+        stage('Sonar') {
             steps {
-                script {
-                    def scannerHome = tool 'SonarQube Scanner'
-                    withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner"
+                    withSonarQubeEnv('sonarqube'){
+                        sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Pcoverage"
                     }
-                }
             }
         }
 
@@ -36,5 +40,6 @@ pipeline {
                 sh 'docker build -t grupo05/spring-petclinic:latest .'
             }
         }
+
     }
 }
