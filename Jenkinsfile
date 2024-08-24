@@ -14,6 +14,12 @@ pipeline {
             }
         }
 
+        stage('Sonar') {
+            steps {
+                sh "mvn sonar:sonar -Pcoverage -Dsonar.host.url=${SONAR_URL_DEV} -Dsonar.login=${SonarToken}"
+            }
+        }
+
         stage('Build') {
             steps {
                 sh "mvn -DskipTests clean package"
@@ -23,14 +29,6 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'mvn clean install'
-            }
-        }
-
-        stage('Sonar') {
-            steps {
-                    withSonarQubeEnv('sonarqube'){
-                        sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Pcoverage"
-                    }
             }
         }
 
